@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10sp"
+        android:text="@string/titleTextViewString"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5sp"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5sp">
+
+            <TextView
+                android:id="@+id/nganTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:minHeight="48dp"
+                android:text="@string/nganTextViewString"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/nganSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="48dp" />
+
+            <Button
+                android:id="@+id/nganChitietButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/chitietString" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5sp">
+
+            <TextView
+                android:id="@+id/hopTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:minHeight="48dp"
+                android:text="@string/hopTextViewString"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/hopSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="48dp" />
+
+            <Button
+                android:id="@+id/hopChitietButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/chitietString" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="5sp">
+
+            <TextView
+                android:id="@+id/keTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:minHeight="48dp"
+                android:text="@string/keTextViewString"
+                android:textSize="16sp" />
+
+            <Spinner
+                android:id="@+id/keSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:minHeight="48dp" />
+
+            <Button
+                android:id="@+id/keChitietButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="0dp"
+                android:text="@string/chitietString" />
+        </TableRow>
+
+    </TableLayout>
+</LinearLayout>
