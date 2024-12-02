@@ -53,7 +53,7 @@ const controller = {
             moTa: req.body.description
           }
         })
-        return res.json({err: false, msg: "Component mapped successfully"})
+        return res.json({err: false, msg: "Component successfully mapped"})
       }
       importComponentMapped(req, res)
         .then(async () => {
@@ -61,7 +61,7 @@ const controller = {
         })
         .catch(async (err) => {
           await prisma.$disconnect
-          return res.json({err: true, msg: `Can't import component mapped:\n${err}`})
+          return res.json({err: true, msg: `Can't map component:\n${err}`})
         })
     },
     case: async (req, res) => {
