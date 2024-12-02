@@ -8,60 +8,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Hop {
-  id_hop               String                 @id @db.VarChar(50)
-  id_ngan              String?                @db.VarChar(50)
-  moTa                 String?                @db.VarChar(255)
-  tenHop               String?                @db.VarChar(255)
-  Ngan                 Ngan?                  @relation(fields: [id_ngan], references: [id_ngan], onDelete: NoAction, onUpdate: NoAction, map: "FK_HopKe")
-  Mapping_Linhkien_Hop Mapping_Linhkien_Hop[]
+model hop {
+  id_hop  String  @db.VarChar(50)
+  id_ngan String  @db.VarChar(50)
+  id_ke   String  @db.VarChar(50)
+  moTa    String? @db.VarChar(255)
+  tenHop  String? @db.VarChar(255)
 
-  @@index([id_ngan], map: "FK_HopKe")
+  mapping_linhkien_hop mapping_linhkien_hop[]
+
+  ngan    ngan    @relation(fields: [id_ngan, id_ke], references: [id_ngan, id_ke])
+
+  @@id([id_hop, id_ngan, id_ke])
+  @@index([id_ngan, id_ke], map: "FK_HopNganKe")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Ke {
+model ke {
   id_ke String  @id @db.VarChar(50)
   moTa  String? @db.VarChar(255)
   tenKe String? @db.VarChar(255)
-  Ngan  Ngan[]
+
+  ngan ngan[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Linhkien {
-  id_linhkien          String                 @id @db.VarChar(50)
-  ngayDangKi           DateTime?              @db.DateTime(0)
-  tenLinhKien          String                 @db.VarChar(255)
-  soLuong              Int                    @default(0)
-  Mapping_Linhkien_Hop Mapping_Linhkien_Hop[]
+model linhkien {
+  id_linhkien String    @id @db.VarChar(50)
+  ngayDangKi  DateTime? @db.DateTime(0)
+  tenLinhKien String    @db.VarChar(255)
+  soLuong     Int       @default(0)
+
+  mapping_linhkien_hop mapping_linhkien_hop[]
 
   @@fulltext([tenLinhKien], map: "idx_fts")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Mapping_Linhkien_Hop {
-  id          Int      @id @default(autoincrement())
-  id_linhkien String   @db.VarChar(50)
-  id_hop      String   @db.VarChar(50)
-  moTa        String   @db.VarChar(255)
+model mapping_linhkien_hop {
+  id          Int    @id @default(autoincrement())
+  id_linhkien String @db.VarChar(50)
+  id_hop      String @db.VarChar(50)
+  id_ngan     String @default("") @db.VarChar(50)
+  id_ke       String @db.VarChar(50)
+  moTa        String @db.VarChar(255)
   soLuong     Int
-  Hop         Hop      @relation(fields: [id_hop], references: [id_hop], onDelete: NoAction, onUpdate: NoAction, map: "FK_Hop")
-  Linhkien    Linhkien @relation(fields: [id_linhkien], references: [id_linhkien], onDelete: NoAction, onUpdate: NoAction, map: "FK_LK")
+
+  linhkien    linhkien  @relation(fields: [id_linhkien], references: [id_linhkien])
+  hop         hop       @relation(fields: [id_hop, id_ngan, id_ke], references: [id_hop, id_ngan, id_ke])
 
   @@index([id_hop], map: "FK_Hop")
   @@index([id_linhkien], map: "FK_LK")
+  @@index([id_ke], map: "FK_Ke")
+  @@index([id_ngan], map: "FK_Ngan")
   @@fulltext([moTa], map: "idx_fts")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model Ngan {
-  id_ngan String  @id @db.VarChar(50)
-  id_ke   String? @db.VarChar(50)
+model ngan {
+  id_ngan String  @db.VarChar(50)
+  id_ke   String  @db.VarChar(50)
   moTa    String? @db.VarChar(255)
   tenNgan String? @db.VarChar(255)
-  Hop     Hop[]
-  Ke      Ke?     @relation(fields: [id_ke], references: [id_ke], onDelete: NoAction, onUpdate: NoAction, map: "FK_KeNgan")
 
+  hop     hop[]
+
+  ke      ke      @relation(fields: [id_ke], references: [id_ke])
+
+  @@id([id_ngan, id_ke])
   @@index([id_ke], map: "FK_KeNgan")
 }

@@ -17,5 +17,6 @@ let importRoute = require('./routes/import.route');
 
 app.use('/search',cors(), searchRoute);
 app.use('/import',cors(), importRoute);
+app.use('/checkAvailable',cors(), (req, res) => {res.send("OK")});
 
 app.listen(3001);

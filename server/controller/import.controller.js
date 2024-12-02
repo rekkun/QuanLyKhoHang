@@ -3,91 +3,23 @@ const { getPrismaClient } = require('@prisma/client/runtime/library')
 const prisma = new PrismaClient()
 
 const controller = {
-  get: {
-    shelf: async (req, res) => {
-      const getShelfID = async () => {
-        const listShelfID = await prisma.hop.findMany({
-          select: {
-            id_hop: true
-          },
-          orderBy: {
-            id_hop: 'desc'
-          }
-        })
-        res.json({err: false, listShelfID: listShelfID})
-      }
-      getShelfID()
-        .then(() => {
-          prisma.$disconnect
-        })
-        .catch(async () => {
-           await prisma.$disconnect
-           return res.json({err: true, msg: "Can't get list shelf ID"})
-        })
-    },
-    rack: async (req, res) => {
-      if (!req.query.shelfID) return res.json({err: true, msg: "shelfID parameter missing"})
-      const getRackID = async () => {
-        const listRackID = await prisma.ngan.findMany({
-          select: {
-            id_ngan: true
-          },
-          orderBy: {
-            id_ngan: 'desc'
-          },
-          where: {
-            id_ke: req.query.shelfID
-          }
-        })
-        res.json({err: false, listRackID: listRackID})
-      }
-      getRackID()
-        .then(() => {
-          prisma.$disconnect
-        })
-        .catch(async () => {
-           await prisma.$disconnect
-           return res.json({err: true, msg: "Can't get list rack ID"})
-        })
-    },
-    case: async (req, res) => {
-      if (!req.query.rackID) return res.json({err: true, msg: "rackID parameter missing"})
-      const getCaseID = async () => {
-        const listCaseID = await prisma.ngan.findMany({
-          select: {
-            id_ngan: true
-          },
-          orderBy: {
-            id_ngan: 'desc'
-          },
-          where: {
-            id_ke: req.query.rackID
-          }
-        })
-        res.json({err: false, listRackID: listCaseID})
-      }
-      getCaseID()
-        .then(() => {
-          prisma.$disconnect
-        })
-        .catch(async () => {
-           await prisma.$disconnect
-           return res.json({err: true, msg: "Can't get list case ID"})
-        })
-    }
-  },
   post: {
     component: async (req, res) => {
       if (!req.body.name || !req.body.quantity) return res.json({err: true, msg: "Name and Quantity are required"})
       const importComponent = async (req, res) => {
-        const getLastID = await prisma.linhkien.findFirst({
-          select: {
-            id_linhkien: true
-          },
-          orderBy: {
-            id_linhkien: 'desc'
-          }
-        })
+        let getLastID ={}
+        try {
+          getLastID = await prisma.linhkien.findFirstOrThrow({
+            select: {
+              id_linhkien: true
+            },
+            orderBy: {
+              id_linhkien: 'desc'
+            }
+          })
+        } catch (err) {
+          getLastID.id_linhkien = "LK_000000";
+        }
         const lastID = getLastID.id_linhkien.split('_')
         const nextID = `${lastID[0]}_${String(Number.parseInt(lastID[1])+1).padStart(6, '0')}`
         await prisma.linhkien.create({
@@ -108,23 +40,57 @@ const controller = {
           return res.json({err: true, msg: `Can't import component:\n${err}`})
         })
     },
+    componentMapped: async (req, res) => {
+      if (!req.body.componentID ||!req.body.caseID  || !req.body.rackID || !req.body.shelfID || !req.body.quantity || !req.body.description) return res.json({err: true, msg: "ComponentID, CaseID, RackID, ShelfID, Quantity and Description are required"})
+      const importComponentMapped = async (req, res) => {
+        await prisma.mapping_linhkien_hop.create({
+          data: {
+            id_linhkien: req.body.componentID,
+            id_hop: req.body.caseID,
+            id_ngan: req.body.rackID,
+            id_ke: req.body.shelfID,
+            soLuong: req.body.quantity,
+            moTa: req.body.description
+          }
+        })
+        return res.json({err: false, msg: "Component mapped successfully"})
+      }
+      importComponentMapped(req, res)
+        .then(async () => {
+          prisma.$disconnect
+        })
+        .catch(async (err) => {
+          await prisma.$disconnect
+          return res.json({err: true, msg: `Can't import component mapped:\n${err}`})
+        })
+    },
     case: async (req, res) => {
-      if (!req.body.name || !req.body.description || !req.body.rackID) return res.json({err: true, msg:"Name, Description and RackID are required"})
+      if (!req.body.name || !req.body.description || !req.body.rackID || !req.body.shelfID) return res.json({err: true, msg:"Name, Description, RackID and ShelfID are required"})
       const importCase = async (req, res) => {
-        const getLastID = await prisma.hop.findFirst({
+        let getLastID;
+        try {
+          getLastID = await prisma.hop.findFirstOrThrow({
           select: {
             id_hop: true
           },
           orderBy: {
             id_hop: 'desc'
+          },
+          where: {
+            id_ngan: req.body.rackID,
+            id_ke: req.body.shelfID
           }
         })
-        const lastID = getLastID.id_hop.split('_')
-        const nextID = `${lastID[0]}_${String(Number.parseInt(lastID[1])+1).padStart(3, '0')}`
+        } catch (err) {
+          getLastID = 0;
+        }
+        const lastID = getLastID.id_hop || 0;
+        const nextID = `${String(Number.parseInt(lastID)+1)}`
         await prisma.hop.create({
           data: {
             id_hop: nextID,
             id_ngan: req.body.rackID,
+            id_ke: req.body.shelfID,
             tenHop: req.body.name,
             moTa: req.body.description
           }
@@ -143,52 +109,60 @@ const controller = {
     rack: async (req, res) => {
       if (!req.body.name || !req.body.description || !req.body.shelfID) return res.json({err:true, msg:"Name, Description and ShelfID are required"})
       const importRack = async (req, res) => {
-        const getLastID = await prisma.ngan.findFirst({
+      let getLastID;
+      try {
+        getLastID = await prisma.ngan.findFirstOrThrow({
           select: {
-            id_ngan: true
+            id_ngan: true,
+            id_ke: true
           },
           orderBy: {
             id_ngan: 'desc'
           },
           where: {
-            id_key: req.body.shelfID
+            id_ke: req.body.shelfID
           }
         })
-        const lastID = getLastID.id_ngan.split('_')
-        const nextID = `${lastID[0]}_${String(Number.parseInt(lastID[1])+1).padStart(2, '0')}`
-        await prisma.ngan.create({
-          data: {
-            id_ngan: nextID,
-            id_ke: req.body.ShelfID,
-            tenNgan: req.body.name,
-            moTa: req.body.description
-          }
-        })
-        res.json({err: false, msg:"Rack successfully imported"})
+      } catch (error) {
+        getLastID = 0;
       }
-      importRack(req, res)
-        .then(() => {
-          prisma.$disconnect
-        })
-        .catch(async (err) => {
-          await prisma.$disconnect
-          return res.json({err: true, msg: `Can't import rack:\n${err}`})
-        })
+      const lastID = getLastID.id_ngan || 0
+      const nextID = `${String(Number.parseInt(lastID)+1)}`
+      await prisma.ngan.create({
+        data: {
+          id_ngan: nextID,
+          id_ke: req.body.shelfID,
+          tenNgan: req.body.name,
+          moTa: req.body.description
+        }
+      })
+      res.json({err: false, msg:"Rack successfully imported"})
+    }
+    importRack(req, res)
+      .then(() => {
+        prisma.$disconnect
+      })
+      .catch(async (err) => {
+        await prisma.$disconnect
+        return res.json({err: true, msg: `Can't import rack:\n${err}`})
+      })
     },
     shelf: async (req, res) => {
       if (!req.body.name || !req.body.description || !req.body.shelfID) return res.json({err: true, msg:"Name, Description and ShelfID are required"})
       const importShelf = async (req, res) => {
-        const getListShelfID = await prisma.ke.findFirst({
+        let getListShelfID;
+        try {
+          getListShelfID = await prisma.ke.findUniqueOrThrow({
           select: {
             id_ke: true
           },
-          orderBy: {
-            id_ke: 'desc'
-          },
           where: {
-            id_key: req.body.shelfID
+            id_ke: req.body.shelfID
           }
         })
+        } catch (err) {
+          getListShelfID = 0;
+        } 
         if(getListShelfID.id_ke) return res.json({err: true, msg:"ShelfID already exists"})
         await prisma.ke.create({
           data: {

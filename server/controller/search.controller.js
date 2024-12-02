@@ -8,17 +8,42 @@ const controller = {
       const search = async () => {
         if(!req.query.searchString) return res.json({err: true, msg: "searchString must be not empty"})
         // const query = await prisma.$queryRaw`SELECT mapping_Linhkien_Hop.id_linhkien, mapping_Linhkien_Hop.id_hop, mapping_Linhkien_Hop.soLuong, Linhkien.tenLinhKien, Hop.id_hop, Hop.tenHop, Ngan.id_ngan, Ngan.tenNgan, Ke.id_ke, Ke.tenKe FROM mapping_Linhkien_Hop, Linhkien, Hop, Ngan, Ke WHERE MATCH(mapping_Linhkien_Hop.moTa) AGAINST(${req.query.searchString} IN NATURAL LANGUAGE MODE) AND mapping_Linhkien_Hop.id_linhkien = Linhkien.id_linhkien AND mapping_Linhkien_Hop.id_hop = Hop.id_hop AND Hop.id_ngan = Ngan.id_ngan AND Ngan.id_ke = Ke.id_ke;`
-        const query = await prisma.mapping_Linhkien_Hop.findMany({
+        const query = await prisma.mapping_linhkien_hop.findMany({
+          relationLoadStrategy: "join",
           select: {
-            Hop: {
+            // hop: {
+            //   select: {
+            //     id_hop: true,
+            //     tenHop: true,
+            //     ngan: {
+            //       select: {
+            //         id_ngan: true,
+            //         tenNgan: true,
+            //         ke: {
+            //           select: {
+            //             id_ke: true,
+            //             tenKe: true
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // },
+            // linhkien: {
+            //   select: {
+            //     id_linhkien: true,
+            //     tenLinhKien: true
+            //   }
+            // },
+            hop: {
               select: {
                 id_hop: true,
                 tenHop: true,
-                Ngan: {
+                ngan: {
                   select: {
                     id_ngan: true,
                     tenNgan: true,
-                    Ke: {
+                    ke: {
                       select: {
                         id_ke: true,
                         tenKe: true
@@ -28,14 +53,9 @@ const controller = {
                 }
               }
             },
-            Linhkien: {
-              select: {
-                id_linhkien: true,
-                tenLinhKien: true
-              }
-            },
             moTa: true,
-            soLuong: true
+            soLuong: true,
+            id: true
           },
           where: {
             moTa: {
@@ -60,16 +80,14 @@ const controller = {
     },
     component: (req, res) => {
       const search = async () => {
-        if (!req.query.searchString) return res.json({err: true, msg: "searchString is required"})
+        //if (!req.query.searchString) return res.json({err: true, msg: "searchString is required"})
         const query = await prisma.linhkien.findMany({
           select: {
             id_linhkien: true,
             tenLinhKien: true
           },
-          where: {
-            tenLinhKien: {
-              search: req.query.searchString
-            }
+          orderBy: {
+            id_linhkien: 'desc'
           }
         })
         res.json({err: false, type:"Component", msg: query})
@@ -88,7 +106,9 @@ const controller = {
       const getShelfID = async () => {
         const listShelfID = await prisma.ke.findMany({
           select: {
-            id_ke: true
+            id_ke: true,
+            tenKe: true,
+            moTa: true
           },
           orderBy: {
             id_ke: 'desc'
@@ -111,7 +131,10 @@ const controller = {
       const getRackID = async () => {
         const listRackID = await prisma.ngan.findMany({
           select: {
-            id_ngan: true
+            id_ngan: true,
+            id_ke: true,
+            moTa: true,
+            tenNgan: true
           },
           orderBy: {
             id_ngan: 'desc'
@@ -132,16 +155,20 @@ const controller = {
         })
     },
     case: async (req, res) => {
-      if (!req.query.rackID) return res.json({err: true, msg: "rackID parameter missing"})
+      if (!req.query.shelfID || !req.query.rackID) return res.json({err: true, msg: "ShelfID and RackID parameters missing"})
       const getCaseID = async () => {
         const listCaseID = await prisma.hop.findMany({
           select: {
-            id_hop: true
+            id_hop: true,
+            tenHop: true,
+            id_ngan: true,
+            moTa: true
           },
           orderBy: {
             id_hop: 'desc'
           },
           where: {
+            id_ke: req.query.shelfID,
             id_ngan: req.query.rackID
           }
         })
@@ -280,7 +307,7 @@ const controller = {
         })
     },
     case: async (req, res) => {
-      if (!req.body.rackID) return res.json({err: true, msg: "rackID parameter missing"})
+      if (!req.body.shelfID || !req.body.rackID) return res.json({err: true, msg: "ShelfID and RackID parameters missing"})
       const getCaseID = async () => {
         const listCaseID = await prisma.hop.findMany({
           select: {
@@ -290,6 +317,7 @@ const controller = {
             id_hop: 'desc'
           },
           where: {
+            id_ke: req.body.shelfID,
             id_ngan: req.body.rackID
           }
         })
