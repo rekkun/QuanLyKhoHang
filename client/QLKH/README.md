@@ -5,7 +5,7 @@
 ## Công nghệ sử dụng
 
 1. Android SDK
-  Bộ công cụ phát triển ứng dụng trên nền tảng hệ điều hành Android
+  `Bộ công cụ phát triển ứng dụng trên nền tảng hệ điều hành Android`
 
 2. React Native
-  Framework nổi tiếng do Facebook (nay là Meta) phát triển, hỗ trợ xây dựng ứng dụng di động và WebApp
+  `Framework nổi tiếng do Facebook (nay là Meta) phát triển, hỗ trợ xây dựng ứng dụng di động và WebApp`
