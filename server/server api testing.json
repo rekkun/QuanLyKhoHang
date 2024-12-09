@@ -1,0 +1,349 @@
+{
+	"info": {
+		"_postman_id": "274b8596-3b06-42a1-9bb4-d5efcd062550",
+		"name": "android",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34766508"
+	},
+	"item": [
+		{
+			"name": "import",
+			"item": [
+				{
+					"name": "shelf",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "kệ số 1b",
+									"description": "Tên kệ hàng",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "kệ để hàng cũ",
+									"description": "Mô tả kệ hàng",
+									"type": "text"
+								},
+								{
+									"key": "shelfID",
+									"value": "2",
+									"description": "ID kệ hàng",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}import/shelf",
+							"host": [
+								"{{base_url}}import"
+							],
+							"path": [
+								"shelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rack",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "ngăn số 101",
+									"description": "Tên ngăn chứa",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "ngăn chứa màn hình",
+									"description": "Mô tả ngăn chứa",
+									"type": "text"
+								},
+								{
+									"key": "shelfID",
+									"value": "1",
+									"description": "ID của kệ hàng có ngăn chứa này",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}import/rack",
+							"host": [
+								"{{base_url}}import"
+							],
+							"path": [
+								"rack"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "case",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "hộp của Đăng",
+									"description": "Tên hộp chứa",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "hộp cá nhân của Bùi Hải Đăng - 2021603066",
+									"description": "Mô tả hộp chứa",
+									"type": "text"
+								},
+								{
+									"key": "shelfID",
+									"value": "1",
+									"description": "ID của kệ chứa hộp này",
+									"type": "text"
+								},
+								{
+									"key": "rackID",
+									"value": "1",
+									"description": "ID mới ngăn chứa hộp này",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}import/case",
+							"host": [
+								"{{base_url}}import"
+							],
+							"path": [
+								"case"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "component",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "màn hình IPhone 16",
+									"description": "Tên linh kiện",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "5",
+									"description": "Số lượng",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}import/component",
+							"host": [
+								"{{base_url}}import"
+							],
+							"path": [
+								"component"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "componentMapped",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "shelfID",
+									"value": "1",
+									"description": "ID kệ ",
+									"type": "text"
+								},
+								{
+									"key": "rackID",
+									"value": "1",
+									"description": "ID ngăn ",
+									"type": "text"
+								},
+								{
+									"key": "caseID",
+									"value": "1",
+									"description": "ID hộp ",
+									"type": "text"
+								},
+								{
+									"key": "componentID",
+									"value": "1",
+									"description": "ID linh kiện",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "15",
+									"description": "Số lượng linh kiện trong hộp chứa",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Không có",
+									"description": "Mô tả",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}import/componentMapped",
+							"host": [
+								"{{base_url}}import"
+							],
+							"path": [
+								"componentMapped"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "search",
+			"item": [
+				{
+					"name": "shelf",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}search/shelf",
+							"host": [
+								"{{base_url}}search"
+							],
+							"path": [
+								"shelf"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "rack",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}search/rack?shelfID=1",
+							"host": [
+								"{{base_url}}search"
+							],
+							"path": [
+								"rack"
+							],
+							"query": [
+								{
+									"key": "shelfID",
+									"value": "1",
+									"description": "ID của kệ hàng"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "case",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}search/case?shelfID=1&rackID=1",
+							"host": [
+								"{{base_url}}search"
+							],
+							"path": [
+								"case"
+							],
+							"query": [
+								{
+									"key": "shelfID",
+									"value": "1",
+									"description": "ID của kệ chứa"
+								},
+								{
+									"key": "rackID",
+									"value": "1",
+									"description": "ID của ngăn chứa"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "component",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}search/component",
+							"host": [
+								"{{base_url}}search"
+							],
+							"path": [
+								"component"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "componentMapped",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}search/componentMapped?searchString=asdf",
+							"host": [
+								"{{base_url}}search"
+							],
+							"path": [
+								"componentMapped"
+							],
+							"query": [
+								{
+									"key": "searchString",
+									"value": "asdf",
+									"description": "Từ khoá để tìm linh kiện"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
