@@ -5,6 +5,7 @@ Các thành viên bao gồm:
 - Nguyễn Quang Tùng - 2021604108
 - Bùi Hải Đăng - 2021603066
 - Vũ Minh Kha - 2021608283
+- Đào Quang Anh - 2020604617
 
 - Client sử dụng Android SDK và React Native
 - Server sử dụng NodeJS, Expressjs, Prisma và MySQL
